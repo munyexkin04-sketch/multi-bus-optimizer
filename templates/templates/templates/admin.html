@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - User Management</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Admin Management</p>
+        <h1>User Accounts</h1>
+        <p class="hero-copy">Create, remove, and manage login accounts for the optimization app.</p>
+      </div>
+      <div class="hero-badge">Admin</div>
+    </header>
+
+    <main>
+      <section class="panel grid-2">
+        <div class="card card-soft">
+          <h2>Existing users</h2>
+          {% if error %}
+            <div class="alert alert-error">{{ error }}</div>
+          {% elif message %}
+            <div class="alert alert-success">{{ message }}</div>
+          {% endif %}
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for username, password in users %}
+                <tr>
+                  <td>{{ username }}</td>
+                  <td>
+                    {% if username != 'admin' %}
+                      <form method="post" style="display:inline;">
+                        <input type="hidden" name="action" value="delete_user" />
+                        <input type="hidden" name="username_to_delete" value="{{ username }}" />
+                        <button class="btn btn-secondary" type="submit">Delete</button>
+                      </form>
+                    {% else %}
+                      <span class="text-muted">Protected</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card card-highlight">
+          <h2>Create new user</h2>
+          <form method="post" class="form-grid">
+            <input type="hidden" name="action" value="add_user" />
+            <label>Username<input type="text" name="username" required /></label>
+            <label>Password<input type="password" name="password" required /></label>
+            <button class="btn btn-primary" type="submit">Add User</button>
+          </form>
+          <div style="margin-top: 16px;">
+            <a class="btn btn-secondary" href="{{ url_for('index') }}">Back to App</a>
+            <a class="btn btn-secondary" href="{{ url_for('logout') }}">Logout</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
